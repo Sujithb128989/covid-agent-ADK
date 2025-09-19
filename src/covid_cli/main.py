@@ -5,8 +5,6 @@ from dotenv import load_dotenv
 import colorama
 from colorama import Fore, Style
 
-warnings.filterwarnings("ignore", category=UserWarning)
-warnings.filterwarnings("ignore", category=ResourceWarning)
 from .animation import play_animation
 from .agent import root_agent
 
