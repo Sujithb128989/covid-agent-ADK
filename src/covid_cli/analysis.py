@@ -117,6 +117,8 @@ def forecast_cases(country: str, days: int) -> dict:
     plt.legend()
     plot_path = os.path.join(OUTPUT_DIR, f"{country}_forecast_comparison.png")
     plt.savefig(plot_path)
+    if hasattr(os, 'startfile'):
+        os.startfile(plot_path)
     plt.close()
 
     return {
@@ -157,6 +159,8 @@ def detect_anomalies(country: str, metric: str) -> dict:
     plt.legend()
     plot_path = os.path.join(OUTPUT_DIR, f"{country}_{metric}_anomalies.png")
     plt.savefig(plot_path)
+    if hasattr(os, 'startfile'):
+        os.startfile(plot_path)
     plt.close()
 
     return {
@@ -192,6 +196,8 @@ def compare_countries_statistically(country_a: str, country_b: str, metric: str)
     fig = px.box(combined_df, x="country", y=metric, title=f"Comparison of {metric}: {country_a} vs {country_b}")
     plot_path = os.path.join(OUTPUT_DIR, f"{country_a}_vs_{country_b}_{metric}_comparison.html")
     fig.write_html(plot_path)
+    if hasattr(os, 'startfile'):
+        os.startfile(plot_path)
 
     return {
         "country_a": country_a,
@@ -267,6 +273,8 @@ def generate_report(country: str) -> dict:
     report_pdf_path = os.path.join(OUTPUT_DIR, f"{country}_report.pdf")
     with open(report_pdf_path, "w+b") as result_file:
         pisa.CreatePDF(html_out, dest=result_file)
+    if hasattr(os, 'startfile'):
+        os.startfile(report_pdf_path)
 
     return {
         "report_html": report_html_path,
