@@ -18,6 +18,7 @@ from google.adk.utils.context_utils import Aclosing
 
 # Suppress the ALTS warning by setting the GRPC_VERBOSITY environment variable
 os.environ['GRPC_VERBOSITY'] = 'ERROR'
+warnings.filterwarnings("ignore", category=UserWarning)
 
 async def main():
     """
