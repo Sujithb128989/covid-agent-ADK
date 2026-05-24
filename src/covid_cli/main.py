@@ -1,6 +1,13 @@
 import os
 import asyncio
+import warnings
 from dotenv import load_dotenv
+import colorama
+from colorama import Fore, Style
+
+warnings.filterwarnings("ignore", message="There are non-text parts in the response")
+warnings.filterwarnings("ignore", category=ResourceWarning, message="Unclosed client session")
+warnings.filterwarnings("ignore", category=ResourceWarning, message="Unclosed connector")
 from .animation import play_animation
 from .agent import root_agent
 
@@ -19,12 +26,13 @@ async def main():
     """
     The main function of the COVID-19 CLI application.
     """
+    colorama.init()
     load_dotenv()
     play_animation()
 
-    print("Agent: Welcome to the COVID-19 Data Agent!")
-    print("Agent: You can ask me questions about COVID-19 data.")
-    print("Agent: Type 'exit' to quit.")
+    print(f"{Fore.GREEN}Agent: Welcome to the COVID-19 Data Agent!{Style.RESET_ALL}")
+    print(f"{Fore.GREEN}Agent: You can ask me questions about COVID-19 data.{Style.RESET_ALL}")
+    print(f"{Fore.GREEN}Agent: Type 'exit' to quit.{Style.RESET_ALL}")
 
     artifact_service = InMemoryArtifactService()
     session_service = InMemorySessionService()
@@ -42,7 +50,7 @@ async def main():
     session = await session_service.create_session(app_name="covid_agent", user_id=user_id)
 
     while True:
-        query = input("You: ")
+        query = input(f"{Fore.YELLOW}You: {Style.RESET_ALL}")
         if query.lower() == "exit":
             break
 
@@ -59,13 +67,13 @@ async def main():
               async for event in agen:
                 if event.content and event.content.parts:
                   if text := ''.join(part.text or '' for part in event.content.parts):
-                    print(f'Agent: {text}')
+                    print(f"{Fore.GREEN}Agent: {text}{Style.RESET_ALL}")
         except Exception as e:
             if "ResourceExhausted" in str(e):
-                print("Agent: I'm sorry, I've hit my request limit for the day. Please try again tomorrow.")
+                print(f"{Fore.RED}Agent: I'm sorry, I've hit my request limit for the day. Please try again tomorrow.{Style.RESET_ALL}")
             else:
-                print(f"Agent: I'm sorry, I had trouble understanding that. Error: {e}")
-                print("Agent: Please try rephrasing your question.")
+                print(f"{Fore.RED}Agent: I'm sorry, I had trouble understanding that. Error: {e}{Style.RESET_ALL}")
+                print(f"{Fore.RED}Agent: Please try rephrasing your question.{Style.RESET_ALL}")
 
     await runner.close()
 
