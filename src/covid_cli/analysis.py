@@ -12,6 +12,7 @@ import torch
 import torch.nn as nn
 from sklearn.preprocessing import MinMaxScaler
 from google.genai import Client
+from colorama import Fore, Style
 
 from .data import get_covid_data
 
@@ -85,6 +86,7 @@ def forecast_cases(country: str, days: int) -> dict:
     """
     Uses Prophet and LSTM to forecast new cases for a given country, compares them, and saves a plot.
     """
+    print(f"\n{Fore.CYAN}Agent: ⏳ Training Prophet model and PyTorch LSTM for {country} (forecasting {days} days)...{Style.RESET_ALL}")
     df = get_covid_data()
     country_df = df[df['country'] == country].copy()
     if country_df.empty:
@@ -118,6 +120,7 @@ def forecast_cases(country: str, days: int) -> dict:
     plot_path = os.path.join(OUTPUT_DIR, f"{country}_forecast_comparison.png")
     plt.savefig(plot_path)
     if hasattr(os, 'startfile'):
+        print(f"{Fore.CYAN}Agent: 📂 Opening the forecast comparison plot...{Style.RESET_ALL}")
         os.startfile(plot_path)
     plt.close()
 
@@ -133,6 +136,7 @@ def detect_anomalies(country: str, metric: str) -> dict:
     """
     Uses Isolation Forest to detect anomalies in outbreak patterns and saves a plot.
     """
+    print(f"\n{Fore.CYAN}Agent: ⏳ Running Isolation Forest anomaly detection for {country}...{Style.RESET_ALL}")
     df = get_covid_data()
     country_df = df[df['country'] == country].copy()
     if country_df.empty:
@@ -160,6 +164,7 @@ def detect_anomalies(country: str, metric: str) -> dict:
     plot_path = os.path.join(OUTPUT_DIR, f"{country}_{metric}_anomalies.png")
     plt.savefig(plot_path)
     if hasattr(os, 'startfile'):
+        print(f"{Fore.CYAN}Agent: 📂 Opening the anomaly detection plot...{Style.RESET_ALL}")
         os.startfile(plot_path)
     plt.close()
 
@@ -174,6 +179,7 @@ def compare_countries_statistically(country_a: str, country_b: str, metric: str)
     """
     Performs a Mann-Whitney U test and T-test for cross-country metric comparisons.
     """
+    print(f"\n{Fore.CYAN}Agent: ⏳ Statistically comparing {country_a} and {country_b}...{Style.RESET_ALL}")
     df = get_covid_data()
 
     df_a = df[df['country'] == country_a].copy()
@@ -197,6 +203,7 @@ def compare_countries_statistically(country_a: str, country_b: str, metric: str)
     plot_path = os.path.join(OUTPUT_DIR, f"{country_a}_vs_{country_b}_{metric}_comparison.html")
     fig.write_html(plot_path)
     if hasattr(os, 'startfile'):
+        print(f"{Fore.CYAN}Agent: 📂 Opening the interactive statistical comparison plot...{Style.RESET_ALL}")
         os.startfile(plot_path)
 
     return {
@@ -214,6 +221,7 @@ def generate_report(country: str) -> dict:
     """
     Compiles automated insights, anomalies, and statistical comparisons into a structured HTML/PDF report.
     """
+    print(f"\n{Fore.CYAN}Agent: ⏳ Hang on, I'm compiling the full data science report for {country}. This involves training models, which usually takes about 30-40 seconds...{Style.RESET_ALL}")
     forecast_info = forecast_cases(country, 30)
     anomaly_info = detect_anomalies(country, "new_cases")
 
@@ -274,6 +282,7 @@ def generate_report(country: str) -> dict:
     with open(report_pdf_path, "w+b") as result_file:
         pisa.CreatePDF(html_out, dest=result_file)
     if hasattr(os, 'startfile'):
+        print(f"{Fore.CYAN}Agent: 📂 Opening the final generated PDF report...{Style.RESET_ALL}")
         os.startfile(report_pdf_path)
 
     return {

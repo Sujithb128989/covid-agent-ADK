@@ -17,12 +17,15 @@ from google.genai import types
 from google.adk.utils.context_utils import Aclosing
 
 import logging
+import cmdstanpy
+
 logging.getLogger('google.genai').setLevel(logging.ERROR)
 logging.getLogger('google.adk').setLevel(logging.ERROR)
+cmdstanpy.utils.get_logger().setLevel(logging.ERROR)
 
 # Suppress the ALTS warning by setting the GRPC_VERBOSITY environment variable
 os.environ['GRPC_VERBOSITY'] = 'ERROR'
-warnings.filterwarnings("ignore", category=UserWarning)
+warnings.filterwarnings("ignore")
 
 async def main():
     """
