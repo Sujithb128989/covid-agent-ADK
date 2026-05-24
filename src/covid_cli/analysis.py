@@ -81,7 +81,7 @@ def forecast_lstm(data, days: int = 30):
     actual_predictions = scaler.inverse_transform(np.array(test_inputs[train_window:]).reshape(-1, 1))
     return actual_predictions.flatten()
 
-def forecast_cases(country: str, days: int = 30) -> dict:
+def forecast_cases(country: str, days: int) -> dict:
     """
     Uses Prophet and LSTM to forecast new cases for a given country, compares them, and saves a plot.
     """
@@ -127,7 +127,7 @@ def forecast_cases(country: str, days: int = 30) -> dict:
         "average_forecasted_daily_cases_lstm": round(np.mean(lstm_forecast), 2)
     }
 
-def detect_anomalies(country: str, metric: str = "new_cases") -> dict:
+def detect_anomalies(country: str, metric: str) -> dict:
     """
     Uses Isolation Forest to detect anomalies in outbreak patterns and saves a plot.
     """
@@ -166,7 +166,7 @@ def detect_anomalies(country: str, metric: str = "new_cases") -> dict:
         "total_anomalies": len(anomalies)
     }
 
-def compare_countries_statistically(country_a: str, country_b: str, metric: str = "new_cases_smoothed_per_million") -> dict:
+def compare_countries_statistically(country_a: str, country_b: str, metric: str) -> dict:
     """
     Performs a Mann-Whitney U test and T-test for cross-country metric comparisons.
     """
@@ -208,8 +208,8 @@ def generate_report(country: str) -> dict:
     """
     Compiles automated insights, anomalies, and statistical comparisons into a structured HTML/PDF report.
     """
-    forecast_info = forecast_cases(country)
-    anomaly_info = detect_anomalies(country)
+    forecast_info = forecast_cases(country, 30)
+    anomaly_info = detect_anomalies(country, "new_cases")
 
     if "error" in forecast_info or "error" in anomaly_info:
         return {"error": "Failed to generate report due to missing data."}
