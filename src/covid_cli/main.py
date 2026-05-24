@@ -16,6 +16,10 @@ from google.adk.auth.credential_service.in_memory_credential_service import InMe
 from google.genai import types
 from google.adk.utils.context_utils import Aclosing
 
+import logging
+logging.getLogger('google.genai').setLevel(logging.ERROR)
+logging.getLogger('google.adk').setLevel(logging.ERROR)
+
 # Suppress the ALTS warning by setting the GRPC_VERBOSITY environment variable
 os.environ['GRPC_VERBOSITY'] = 'ERROR'
 warnings.filterwarnings("ignore", category=UserWarning)
