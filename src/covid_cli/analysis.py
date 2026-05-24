@@ -43,6 +43,7 @@ def create_inout_sequences(input_data, tw):
     return inout_seq
 
 def forecast_lstm(data, days: int = 30):
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     scaler = MinMaxScaler(feature_range=(-1, 1))
     data_normalized = scaler.fit_transform(data.reshape(-1, 1))
     data_normalized = torch.FloatTensor(data_normalized).view(-1)
@@ -50,16 +51,17 @@ def forecast_lstm(data, days: int = 30):
     train_window = 30
     train_inout_seq = create_inout_sequences(data_normalized, train_window)
 
-    model = LSTMModel()
+    model = LSTMModel().to(device)
     loss_function = nn.MSELoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
     epochs = 50
     for i in range(epochs):
         for seq, labels in train_inout_seq:
+            seq, labels = seq.to(device), labels.to(device)
             optimizer.zero_grad()
-            model.hidden_cell = (torch.zeros(1, 1, model.hidden_layer_size),
-                            torch.zeros(1, 1, model.hidden_layer_size))
+            model.hidden_cell = (torch.zeros(1, 1, model.hidden_layer_size).to(device),
+                            torch.zeros(1, 1, model.hidden_layer_size).to(device))
             y_pred = model(seq)
             single_loss = loss_function(y_pred, labels)
             single_loss.backward()
@@ -70,10 +72,10 @@ def forecast_lstm(data, days: int = 30):
 
     model.eval()
     for i in range(days):
-        seq = torch.FloatTensor(test_inputs[-train_window:])
+        seq = torch.FloatTensor(test_inputs[-train_window:]).to(device)
         with torch.no_grad():
-            model.hidden = (torch.zeros(1, 1, model.hidden_layer_size),
-                            torch.zeros(1, 1, model.hidden_layer_size))
+            model.hidden = (torch.zeros(1, 1, model.hidden_layer_size).to(device),
+                            torch.zeros(1, 1, model.hidden_layer_size).to(device))
             test_inputs.append(model(seq).item())
 
     actual_predictions = scaler.inverse_transform(np.array(test_inputs[train_window:]).reshape(-1, 1))
