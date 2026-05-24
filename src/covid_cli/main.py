@@ -5,9 +5,8 @@ from dotenv import load_dotenv
 import colorama
 from colorama import Fore, Style
 
-warnings.filterwarnings("ignore", message="There are non-text parts in the response")
-warnings.filterwarnings("ignore", category=ResourceWarning, message="Unclosed client session")
-warnings.filterwarnings("ignore", category=ResourceWarning, message="Unclosed connector")
+warnings.filterwarnings("ignore", category=UserWarning)
+warnings.filterwarnings("ignore", category=ResourceWarning)
 from .animation import play_animation
 from .agent import root_agent
 
