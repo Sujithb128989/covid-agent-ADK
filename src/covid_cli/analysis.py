@@ -225,7 +225,7 @@ def generate_report(country: str) -> dict:
     """
     try:
         response = client.models.generate_content(
-            model='gemini-1.5-flash',
+            model='gemini-2.0-flash',
             contents=prompt,
         )
         automated_insight_text = response.text

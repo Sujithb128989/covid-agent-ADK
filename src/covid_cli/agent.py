@@ -121,7 +121,7 @@ from .analysis import forecast_cases, detect_anomalies, compare_countries_statis
 
 root_agent = Agent(
     name="covid_agent",
-    model="gemini-1.5-flash-latest",
+    model="gemini-2.0-flash",
     description="An agent that can answer questions about COVID-19 data.",
     instruction=(
         "You are a helpful data science agent who can answer user questions and provide deep insights about COVID-19 data. "
