@@ -250,27 +250,23 @@ def generate_report(country: str) -> dict:
             <h2>Automated Insights</h2>
             <div>{{ automated_insight_text | replace('\n', '<br>') }}</div>
         </div>
-
-        <h2>Time Series Forecast (Prophet vs LSTM)</h2>
-        <img src="{{ os.path.basename(forecast_info.plot_path) }}" alt="Forecast Plot">
-
-        <h2>Outbreak Anomaly Detection (Isolation Forest)</h2>
-        <img src="{{ os.path.basename(anomaly_info.plot_path) }}" alt="Anomaly Plot">
-
+    <h1>COVID-19 Data Science Report: {country}</h1>
+    <h2>Data Science Insights</h2>
+    <p>{automated_insight_text}</p>
+    <h2>Time Series Forecast (Prophet vs LSTM)</h2>
+    <img src="{os.path.abspath(forecast_plot)}" alt="Forecast Plot" width="600" />
+    <h2>Outbreak Anomaly Detection (Isolation Forest)</h2>
+    <img src="{os.path.abspath(anomaly_plot)}" alt="Anomaly Plot" width="600" />
     </body>
     </html>
     """
 
-    template = Template(template_str)
-    html_out = template.render(country=country, forecast_info=forecast_info, anomaly_info=anomaly_info, automated_insight_text=automated_insight_text, os=os)
-
-    report_html_path = os.path.join(OUTPUT_DIR, f"{country}_report.html")
-    report_pdf_path = os.path.join(OUTPUT_DIR, f"{country}_report.pdf")
-
-    with open(report_html_path, "w") as f:
+    report_html_path = os.path.join(output_dir, f"{country}_report.html")
+    with open(report_html_path, "w", encoding="utf-8") as f:
         f.write(html_out)
 
     # Generate PDF
+    report_pdf_path = os.path.join(output_dir, f"{country}_report.pdf")
     with open(report_pdf_path, "w+b") as result_file:
         pisa.CreatePDF(html_out, dest=result_file)
 
