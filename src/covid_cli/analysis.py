@@ -94,7 +94,7 @@ def forecast_cases(country: str, days: int) -> dict:
         with open(memory_path, 'r') as f:
             data = json.load(f)
         if hasattr(os, 'startfile'):
-            print(f"{Fore.CYAN}Agent: 📂 Loading forecast from memory and opening...{Style.RESET_ALL}")
+            print(f"\n{Fore.CYAN}Agent: 📂 Loading forecast from memory and opening...{Style.RESET_ALL}")
             os.startfile(plot_path)
         return data
 
@@ -132,7 +132,7 @@ def forecast_cases(country: str, days: int) -> dict:
     plot_path = os.path.join(OUTPUT_DIR, f"{country}_forecast_comparison.png")
     plt.savefig(plot_path)
     if hasattr(os, 'startfile'):
-        print(f"{Fore.CYAN}Agent: 📂 Opening the forecast comparison plot...{Style.RESET_ALL}")
+        print(f"\n{Fore.CYAN}Agent: 📂 Opening the forecast comparison plot...{Style.RESET_ALL}")
         os.startfile(plot_path)
     plt.close()
 
@@ -157,7 +157,7 @@ def detect_anomalies(country: str, metric: str) -> dict:
         with open(memory_path, 'r') as f:
             data = json.load(f)
         if hasattr(os, 'startfile'):
-            print(f"{Fore.CYAN}Agent: 📂 Loading anomalies from memory and opening...{Style.RESET_ALL}")
+            print(f"\n{Fore.CYAN}Agent: 📂 Loading anomalies from memory and opening...{Style.RESET_ALL}")
             os.startfile(plot_path)
         return data
 
@@ -189,7 +189,7 @@ def detect_anomalies(country: str, metric: str) -> dict:
     plot_path = os.path.join(OUTPUT_DIR, f"{country}_{metric}_anomalies.png")
     plt.savefig(plot_path)
     if hasattr(os, 'startfile'):
-        print(f"{Fore.CYAN}Agent: 📂 Opening the anomaly detection plot...{Style.RESET_ALL}")
+        print(f"\n{Fore.CYAN}Agent: 📂 Opening the anomaly detection plot...{Style.RESET_ALL}")
         os.startfile(plot_path)
     plt.close()
 
@@ -213,7 +213,7 @@ def compare_countries_statistically(country_a: str, country_b: str, metric: str)
         with open(memory_path, 'r') as f:
             data = json.load(f)
         if hasattr(os, 'startfile'):
-            print(f"{Fore.CYAN}Agent: 📂 Loading statistical comparison from memory and opening...{Style.RESET_ALL}")
+            print(f"\n{Fore.CYAN}Agent: 📂 Loading statistical comparison from memory and opening...{Style.RESET_ALL}")
             os.startfile(plot_path)
         return data
 
@@ -241,7 +241,7 @@ def compare_countries_statistically(country_a: str, country_b: str, metric: str)
     plot_path = os.path.join(OUTPUT_DIR, f"{country_a}_vs_{country_b}_{metric}_comparison.html")
     fig.write_html(plot_path)
     if hasattr(os, 'startfile'):
-        print(f"{Fore.CYAN}Agent: 📂 Opening the interactive statistical comparison plot...{Style.RESET_ALL}")
+        print(f"\n{Fore.CYAN}Agent: 📂 Opening the interactive statistical comparison plot...{Style.RESET_ALL}")
         os.startfile(plot_path)
 
     result = {
@@ -268,7 +268,7 @@ def generate_report(country: str) -> dict:
         with open(memory_path, 'r') as f:
             data = json.load(f)
         if hasattr(os, 'startfile'):
-            print(f"{Fore.CYAN}Agent: 📂 Loading full report from memory and opening...{Style.RESET_ALL}")
+            print(f"\n{Fore.CYAN}Agent: 📂 Loading full report from memory and opening...{Style.RESET_ALL}")
             os.startfile(report_pdf_path)
         return data
 
@@ -333,7 +333,7 @@ def generate_report(country: str) -> dict:
     with open(report_pdf_path, "w+b") as result_file:
         pisa.CreatePDF(html_out, dest=result_file)
     if hasattr(os, 'startfile'):
-        print(f"{Fore.CYAN}Agent: 📂 Opening the final generated PDF report...{Style.RESET_ALL}")
+        print(f"\n{Fore.CYAN}Agent: 📂 Opening the final generated PDF report...{Style.RESET_ALL}")
         os.startfile(report_pdf_path)
 
     result = {

@@ -20,6 +20,8 @@ from google.adk.utils.context_utils import Aclosing
 import logging
 import cmdstanpy
 
+logging.basicConfig(level=logging.ERROR, force=True)
+logging.getLogger().setLevel(logging.ERROR)
 logging.getLogger('google.genai').setLevel(logging.ERROR)
 logging.getLogger('google.adk').setLevel(logging.ERROR)
 cmdstanpy.utils.get_logger().setLevel(logging.ERROR)

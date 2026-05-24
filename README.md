@@ -20,6 +20,9 @@ The application uses the Google Agent Development Kit (ADK) to understand your q
 - **Automated Reports:** Generate HTML and PDF Data Science reports with advanced insights and inline charts.
 - **Country Comparison:** Compare a metric for multiple countries.
 - **Vaccination Progress:** Get the vaccination progress for any country.
+- **Persistent JSON Memory:** The agent stores generated analyses in memory so querying the same country twice instantly loads the existing results.
+- **Asynchronous Live Timer:** Features a live CLI spinner so you know exactly what background models are training.
+- **Auto-Open Outputs:** Generated PDFs, PNGs, and HTML plots automatically pop open on your screen using `os.startfile`.
 - **Conversational Context:** The agent remembers the context of your conversation, so you can ask follow-up questions.
 - **Off-Topic Reminder:** The agent will gently guide you back to COVID-19 related questions if you go off-topic.
 - **Cool Animation:** A retro-style boot-up animation to get you started.
@@ -82,11 +85,17 @@ The data science tools are heavily optimized for local execution. PyTorch LSTM f
 
 **End-to-End Report Generation Benchmark (United States):**
 - **Data Fetch & Preprocessing:** < 5 seconds
-- **Prophet Baseline Model (cmdstanpy):** < 2 seconds
-- **PyTorch LSTM Model (50 Epochs, GPU Accelerated):** ~3 minutes
+- **Prophet Baseline Model:** < 2 seconds
+- **PyTorch LSTM Model (5 Epochs, GPU Accelerated):** ~12 seconds
 - **Isolation Forest Anomaly Detection:** < 1 second
 - **Gemini LLM Synthesis & PDF Rendering:** ~10 seconds
-- **Total End-to-End Execution:** ~3.5 minutes (215 seconds)
+- **Total End-to-End Execution:** ~30 seconds
+
+**Memory Loading Benchmark:**
+- **Total Execution (Subsequent Queries):** < 0.5 seconds
+
+### Live Demo
+<video src="assets/demo.mp4" controls width="800"></video>
 
 ### Example Outputs
 ![France Forecast](assets/France_forecast_comparison.png)
