@@ -38,7 +38,7 @@ The application uses the Google Agent Development Kit (ADK) to understand your q
 
 1.  **Run the application:**
     ```
-    adk run src/covid_cli
+    python -m src.covid_cli.main
     ```
     This will start an interactive session with the agent.
 
