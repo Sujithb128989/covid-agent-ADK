@@ -69,6 +69,7 @@ The application uses the Google Agent Development Kit (ADK) to understand your q
 ### Example Outputs
 ![France Forecast](assets/France_forecast_comparison.png)
 ![US Anomalies](assets/United%20States_new_cases_anomalies.png)
+[View Full Data Science Report (PDF)](assets/United%20States_report.pdf)
 
 3.  **Exit the application:**
     - Type "exit" to quit.
