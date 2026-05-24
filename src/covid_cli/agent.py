@@ -1,17 +1,6 @@
-import requests
 import pandas as pd
-import io
 from typing import List
-
-def get_covid_data():
-    """
-    Downloads the OWID COVID-19 compact dataset and returns it as a pandas DataFrame.
-    """
-    url = "https://catalog.ourworldindata.org/garden/covid/latest/compact/compact.csv"
-    response = requests.get(url)
-    data = response.text
-    df = pd.read_csv(io.StringIO(data))
-    return df
+from .data import get_covid_data
 
 def get_latest_summary(country: str) -> dict:
     """
@@ -128,14 +117,19 @@ def get_vaccination_progress(country: str) -> dict:
     }
 
 from google.adk.agents import Agent
+from .analysis import forecast_cases, detect_anomalies, compare_countries_statistically, generate_report
 
 root_agent = Agent(
     name="covid_agent",
     model="gemini-1.5-flash",
     description="An agent that can answer questions about COVID-19 data.",
     instruction=(
-        "You are a helpful agent who can answer user questions about COVID-19 data. "
-        "Use the provided tools to answer the user's questions. "
+        "You are a helpful data science agent who can answer user questions and provide deep insights about COVID-19 data. "
+        "Use the provided tools to answer the user's questions and proactively run rigorous analysis where appropriate. "
+        "For example, if asked about future cases, use `forecast_cases` to run a Prophet forecast. "
+        "If asked about unusual spikes, use `detect_anomalies` to run Isolation Forest. "
+        "If asked to compare two countries, use `compare_countries_statistically` to do significance testing. "
+        "If asked to generate a comprehensive report, use `generate_report` to create HTML/PDF output with visualizations. "
         "If the user's query is off-topic (not related to COVID-19 data), "
         "politely decline the request and remind them of your purpose."
     ),
@@ -144,5 +138,9 @@ root_agent = Agent(
         get_trend,
         compare_countries,
         get_vaccination_progress,
+        forecast_cases,
+        detect_anomalies,
+        compare_countries_statistically,
+        generate_report,
     ],
 )
