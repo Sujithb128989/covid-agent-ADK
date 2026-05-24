@@ -99,7 +99,7 @@ The data science tools are heavily optimized for local execution. PyTorch LSTM f
 *(The 43MB MP4 video cannot be played inline by your markdown viewer. [Click here to download and watch the high-res demo](https://github.com/Sujithb128989/covid-agent-ADK/raw/master/assets/demo.mp4))*
 
 ### Example Outputs
-![Agent CLI Interface](assets/cli_bug_screenshot.png)
+![Agent CLI Interface](assets/cli_demo.png)
 ![France Forecast](assets/France_forecast_comparison.png)
 ![US Anomalies](assets/United%20States_new_cases_anomalies.png)
 [View Full Data Science Report (PDF)](assets/United%20States_report.pdf)
@@ -115,6 +115,12 @@ The application uses the following technologies:
 - **Gemini API:** The agent uses the Gemini API to understand user queries and generate responses.
 - **pandas:** The application uses the pandas library to process the COVID-19 data.
 - **requests:** The application uses the requests library to download the COVID-19 data.
+- **Prophet:** Used for baseline time series forecasting.
+- **PyTorch LSTM:** Deep learning model for advanced time series forecasting.
+- **Scikit-learn Isolation Forest:** Used for anomaly detection in daily cases.
+- **scipy:** Rigorous cross-country statistical significance testing using Mann-Whitney U and T-tests.
+- **xhtml2pdf:** Compiles automated insights and plots into cohesive PDF Data Science reports.
+- **FAISS:** Vector database used for semantic search and caching context.
 
 The application is built around an ADK `Agent`. The data-fetching functions (`get_latest_summary`, `get_trend`, etc.) are provided to the agent as tools. When you ask a question, the ADK handles:
 1.  Sending the user's query to the Gemini model.
