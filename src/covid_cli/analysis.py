@@ -7,7 +7,7 @@ from prophet import Prophet
 from sklearn.ensemble import IsolationForest
 from scipy import stats
 from jinja2 import Template
-from weasyprint import HTML
+from xhtml2pdf import pisa
 import torch
 import torch.nn as nn
 from sklearn.preprocessing import MinMaxScaler
@@ -271,7 +271,8 @@ def generate_report(country: str) -> dict:
         f.write(html_out)
 
     # Generate PDF
-    HTML(string=html_out, base_url=os.path.abspath(OUTPUT_DIR)).write_pdf(report_pdf_path)
+    with open(report_pdf_path, "w+b") as result_file:
+        pisa.CreatePDF(html_out, dest=result_file)
 
     return {
         "report_html": report_html_path,
