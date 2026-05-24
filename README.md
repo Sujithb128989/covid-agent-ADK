@@ -95,9 +95,11 @@ The data science tools are heavily optimized for local execution. PyTorch LSTM f
 - **Total Execution (Subsequent Queries):** < 0.5 seconds
 
 ### Live Demo
-<video src="assets/demo.mp4" controls width="800"></video>
+
+*(The 43MB MP4 video cannot be played inline by your markdown viewer. [Click here to download and watch the high-res demo](https://github.com/Sujithb128989/covid-agent-ADK/raw/master/assets/demo.mp4))*
 
 ### Example Outputs
+![Agent CLI Interface](assets/cli_bug_screenshot.png)
 ![France Forecast](assets/France_forecast_comparison.png)
 ![US Anomalies](assets/United%20States_new_cases_anomalies.png)
 [View Full Data Science Report (PDF)](assets/United%20States_report.pdf)
