@@ -13,6 +13,8 @@ import torch.nn as nn
 from sklearn.preprocessing import MinMaxScaler
 from google.genai import Client
 from colorama import Fore, Style
+import json
+from .timer import LiveTimer
 
 from .data import get_covid_data
 
@@ -54,9 +56,9 @@ def forecast_lstm(data, days: int = 30):
 
     model = LSTMModel().to(device)
     loss_function = nn.MSELoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.005)
 
-    epochs = 50
+    epochs = 5
     for i in range(epochs):
         for seq, labels in train_inout_seq:
             seq, labels = seq.to(device), labels.to(device)
@@ -86,9 +88,19 @@ def forecast_cases(country: str, days: int) -> dict:
     """
     Uses Prophet and LSTM to forecast new cases for a given country, compares them, and saves a plot.
     """
-    print(f"\n{Fore.CYAN}Agent: ⏳ Training Prophet model and PyTorch LSTM for {country} (forecasting {days} days)...{Style.RESET_ALL}")
-    df = get_covid_data()
-    country_df = df[df['country'] == country].copy()
+    memory_path = os.path.join(OUTPUT_DIR, f"{country}_forecast_memory.json")
+    plot_path = os.path.join(OUTPUT_DIR, f"{country}_forecast_comparison.png")
+    if os.path.exists(memory_path) and os.path.exists(plot_path):
+        with open(memory_path, 'r') as f:
+            data = json.load(f)
+        if hasattr(os, 'startfile'):
+            print(f"{Fore.CYAN}Agent: 📂 Loading forecast from memory and opening...{Style.RESET_ALL}")
+            os.startfile(plot_path)
+        return data
+
+    with LiveTimer(f"Training Prophet model and PyTorch LSTM for {country} (forecasting {days} days)"):
+        df = get_covid_data()
+        country_df = df[df['country'] == country].copy()
     if country_df.empty:
         return {"error": f"No data found for {country}."}
 
@@ -124,21 +136,34 @@ def forecast_cases(country: str, days: int) -> dict:
         os.startfile(plot_path)
     plt.close()
 
-    return {
+    result = {
         "country": country,
         "forecast_days": days,
         "plot_path": plot_path,
-        "average_forecasted_daily_cases_prophet": round(np.mean(prophet_forecast), 2),
-        "average_forecasted_daily_cases_lstm": round(np.mean(lstm_forecast), 2)
+        "average_forecasted_daily_cases_prophet": round(float(np.mean(prophet_forecast)), 2),
+        "average_forecasted_daily_cases_lstm": round(float(np.mean(lstm_forecast)), 2)
     }
+    with open(memory_path, 'w') as f:
+        json.dump(result, f)
+    return result
 
 def detect_anomalies(country: str, metric: str) -> dict:
     """
     Uses Isolation Forest to detect anomalies in outbreak patterns and saves a plot.
     """
-    print(f"\n{Fore.CYAN}Agent: ⏳ Running Isolation Forest anomaly detection for {country}...{Style.RESET_ALL}")
-    df = get_covid_data()
-    country_df = df[df['country'] == country].copy()
+    memory_path = os.path.join(OUTPUT_DIR, f"{country}_{metric}_anomalies_memory.json")
+    plot_path = os.path.join(OUTPUT_DIR, f"{country}_{metric}_anomalies.png")
+    if os.path.exists(memory_path) and os.path.exists(plot_path):
+        with open(memory_path, 'r') as f:
+            data = json.load(f)
+        if hasattr(os, 'startfile'):
+            print(f"{Fore.CYAN}Agent: 📂 Loading anomalies from memory and opening...{Style.RESET_ALL}")
+            os.startfile(plot_path)
+        return data
+
+    with LiveTimer(f"Running Isolation Forest anomaly detection for {country}"):
+        df = get_covid_data()
+        country_df = df[df['country'] == country].copy()
     if country_df.empty:
         return {"error": f"No data found for {country}."}
 
@@ -168,21 +193,34 @@ def detect_anomalies(country: str, metric: str) -> dict:
         os.startfile(plot_path)
     plt.close()
 
-    return {
+    result = {
         "country": country,
         "metric": metric,
         "plot_path": plot_path,
-        "total_anomalies": len(anomalies)
+        "total_anomalies": int(len(anomalies))
     }
+    with open(memory_path, 'w') as f:
+        json.dump(result, f)
+    return result
 
 def compare_countries_statistically(country_a: str, country_b: str, metric: str) -> dict:
     """
     Performs a Mann-Whitney U test and T-test for cross-country metric comparisons.
     """
-    print(f"\n{Fore.CYAN}Agent: ⏳ Statistically comparing {country_a} and {country_b}...{Style.RESET_ALL}")
-    df = get_covid_data()
+    memory_path = os.path.join(OUTPUT_DIR, f"{country_a}_vs_{country_b}_{metric}_memory.json")
+    plot_path = os.path.join(OUTPUT_DIR, f"{country_a}_vs_{country_b}_{metric}_comparison.html")
+    if os.path.exists(memory_path) and os.path.exists(plot_path):
+        with open(memory_path, 'r') as f:
+            data = json.load(f)
+        if hasattr(os, 'startfile'):
+            print(f"{Fore.CYAN}Agent: 📂 Loading statistical comparison from memory and opening...{Style.RESET_ALL}")
+            os.startfile(plot_path)
+        return data
 
-    df_a = df[df['country'] == country_a].copy()
+    with LiveTimer(f"Statistically comparing {country_a} and {country_b}"):
+        df = get_covid_data()
+
+        df_a = df[df['country'] == country_a].copy()
     df_b = df[df['country'] == country_b].copy()
 
     if df_a.empty or df_b.empty:
@@ -206,24 +244,37 @@ def compare_countries_statistically(country_a: str, country_b: str, metric: str)
         print(f"{Fore.CYAN}Agent: 📂 Opening the interactive statistical comparison plot...{Style.RESET_ALL}")
         os.startfile(plot_path)
 
-    return {
+    result = {
         "country_a": country_a,
         "country_b": country_b,
         "metric": metric,
-        "t_test_p_value": round(p_val_t, 4),
-        "mann_whitney_p_value": round(p_val_u, 4),
-        "significant_difference_t_test": p_val_t < 0.05,
-        "significant_difference_mann_whitney": p_val_u < 0.05,
+        "t_test_p_value": round(float(p_val_t), 4),
+        "mann_whitney_p_value": round(float(p_val_u), 4),
+        "significant_difference_t_test": bool(p_val_t < 0.05),
+        "significant_difference_mann_whitney": bool(p_val_u < 0.05),
         "plot_path": plot_path
     }
+    with open(memory_path, 'w') as f:
+        json.dump(result, f)
+    return result
 
 def generate_report(country: str) -> dict:
     """
     Compiles automated insights, anomalies, and statistical comparisons into a structured HTML/PDF report.
     """
-    print(f"\n{Fore.CYAN}Agent: ⏳ Hang on, I'm compiling the full data science report for {country}. This involves training models, which usually takes about 30-40 seconds...{Style.RESET_ALL}")
-    forecast_info = forecast_cases(country, 30)
-    anomaly_info = detect_anomalies(country, "new_cases")
+    memory_path = os.path.join(OUTPUT_DIR, f"{country}_report_memory.json")
+    report_pdf_path = os.path.join(OUTPUT_DIR, f"{country}_report.pdf")
+    if os.path.exists(memory_path) and os.path.exists(report_pdf_path):
+        with open(memory_path, 'r') as f:
+            data = json.load(f)
+        if hasattr(os, 'startfile'):
+            print(f"{Fore.CYAN}Agent: 📂 Loading full report from memory and opening...{Style.RESET_ALL}")
+            os.startfile(report_pdf_path)
+        return data
+
+    with LiveTimer(f"Compiling the full data science report for {country}"):
+        forecast_info = forecast_cases(country, 30)
+        anomaly_info = detect_anomalies(country, "new_cases")
 
     if "error" in forecast_info or "error" in anomaly_info:
         return {"error": "Failed to generate report due to missing data."}
@@ -285,7 +336,10 @@ def generate_report(country: str) -> dict:
         print(f"{Fore.CYAN}Agent: 📂 Opening the final generated PDF report...{Style.RESET_ALL}")
         os.startfile(report_pdf_path)
 
-    return {
+    result = {
         "report_html": report_html_path,
         "report_pdf": report_pdf_path
     }
+    with open(memory_path, 'w') as f:
+        json.dump(result, f)
+    return result

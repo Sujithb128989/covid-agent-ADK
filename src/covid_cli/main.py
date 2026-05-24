@@ -1,4 +1,5 @@
 import os
+import sys
 import asyncio
 import warnings
 from dotenv import load_dotenv
@@ -31,6 +32,8 @@ async def main():
     """
     The main function of the COVID-19 CLI application.
     """
+    if sys.stdout.encoding != 'utf-8':
+        sys.stdout.reconfigure(encoding='utf-8')
     colorama.init()
     load_dotenv()
     play_animation()
