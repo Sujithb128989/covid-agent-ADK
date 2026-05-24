@@ -232,43 +232,39 @@ def generate_report(country: str) -> dict:
     except Exception as e:
         automated_insight_text = "Could not generate automated insight due to API error."
 
-    template_str = """
+    html_out = f"""
     <!DOCTYPE html>
     <html>
     <head>
-        <title>COVID-19 Data Science Report: {{ country }}</title>
+        <title>COVID-19 Data Science Report: {country}</title>
         <style>
-            body { font-family: sans-serif; margin: 40px; }
-            h1 { color: #333; }
-            h2 { color: #666; }
-            img { max-width: 100%; height: auto; border: 1px solid #ccc; margin-top: 10px;}
-            .insight { background-color: #f9f9f9; padding: 15px; border-left: 5px solid #007bff; margin-bottom: 20px;}
+            body {{ font-family: sans-serif; margin: 40px; }}
+            h1 {{ color: #333; }}
+            h2 {{ color: #666; }}
+            img {{ max-width: 100%; height: auto; border: 1px solid #ccc; margin-top: 10px;}}
+            .insight {{ background-color: #f9f9f9; padding: 15px; border-left: 5px solid #007bff; margin-bottom: 20px;}}
         </style>
     </head>
     <body>
-        <h1>COVID-19 Data Science Report: {{ country }}</h1>
-
+        <h1>COVID-19 Data Science Report: {country}</h1>
         <div class="insight">
-            <h2>Automated Insights</h2>
-            <div>{{ automated_insight_text | replace('\n', '<br>') }}</div>
+            <h2>Data Science Insights</h2>
+            <div>{automated_insight_text.replace(chr(10), '<br>')}</div>
         </div>
-    <h1>COVID-19 Data Science Report: {country}</h1>
-    <h2>Data Science Insights</h2>
-    <p>{automated_insight_text}</p>
-    <h2>Time Series Forecast (Prophet vs LSTM)</h2>
-    <img src="{os.path.abspath(forecast_plot)}" alt="Forecast Plot" width="600" />
-    <h2>Outbreak Anomaly Detection (Isolation Forest)</h2>
-    <img src="{os.path.abspath(anomaly_plot)}" alt="Anomaly Plot" width="600" />
+        <h2>Time Series Forecast (Prophet vs LSTM)</h2>
+        <img src="{os.path.abspath(forecast_info['plot_path'])}" alt="Forecast Plot" width="600" />
+        <h2>Outbreak Anomaly Detection (Isolation Forest)</h2>
+        <img src="{os.path.abspath(anomaly_info['plot_path'])}" alt="Anomaly Plot" width="600" />
     </body>
     </html>
     """
 
-    report_html_path = os.path.join(output_dir, f"{country}_report.html")
+    report_html_path = os.path.join(OUTPUT_DIR, f"{country}_report.html")
     with open(report_html_path, "w", encoding="utf-8") as f:
         f.write(html_out)
 
     # Generate PDF
-    report_pdf_path = os.path.join(output_dir, f"{country}_report.pdf")
+    report_pdf_path = os.path.join(OUTPUT_DIR, f"{country}_report.pdf")
     with open(report_pdf_path, "w+b") as result_file:
         pisa.CreatePDF(html_out, dest=result_file)
 
