@@ -96,7 +96,9 @@ The data science tools are heavily optimized for local execution. PyTorch LSTM f
 
 ### Live Demo
 
-*(The 43MB MP4 video cannot be played inline by your markdown viewer. [Click here to download and watch the high-res demo](https://github.com/Sujithb128989/covid-agent-ADK/raw/master/assets/demo.mp4))*
+https://github.com/user-attachments/assets/b93ae695-e218-4c14-841d-6593d5a89ba7
+
+
 
 ### Example Outputs
 ![Agent CLI Interface](assets/cli_demo.png)
